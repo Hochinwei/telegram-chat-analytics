@@ -1,0 +1,24 @@
+# Raw Telegram exports — keep private
+data/raw/
+*.html
+
+# Output charts — add selected ones to sample_output/ manually
+data/outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.env
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
