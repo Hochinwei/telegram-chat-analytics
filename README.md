@@ -224,4 +224,4 @@ telegram-chat-analysis/
 
 ---
 
-*Built by [Ho Chinwei](https://github.com/yourusername) · PhD student in Cognitive Psychology · University of Hull*
+*Built by [Ho Chinwei](https://github.com/HoChinWei) · PhD student in Cognitive Psychology · University of Hull*
