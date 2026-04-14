@@ -1,7 +1,0 @@
-beautifulsoup4>=4.12
-pandas>=2.0
-matplotlib>=3.7
-seaborn>=0.13
-nltk>=3.8
-wordcloud>=1.9
-networkx>=3.1

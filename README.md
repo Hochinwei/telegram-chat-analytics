@@ -12,8 +12,8 @@ Built as a personal showcase of applied NLP and data visualization techniques us
 - [How to Export Your Telegram Chat](#how-to-export-your-telegram-chat)
 - [Installation](#installation)
 - [Scripts](#scripts)
-- [1. Group Chat Analysis](#1-group-chat-analysis)
-- [2. Private Chat Analysis](#2-private-chat-analysis)
+    - [1. Group Chat Analysis](#1-group-chat-analysis)
+    - [2. Private Chat Analysis](#2-private-chat-analysis)
 - [Key Parameters to Configure](#key-parameters-to-configure)
 - [Sample Outputs](#sample-outputs)
 - [NLP Techniques Used](#nlp-techniques-used)
@@ -186,17 +186,17 @@ KEEP_SENDERS = {"Your Name Here", "Their Name Here"}
 
 ## NLP Techniques Used
 
-- **Tokenization** — sentence and word tokenization via NLTK
-- **Stopword removal** — English stopwords + custom Singlish terms (`lah`, `lor`, `sia`, etc.)
-- **Lowercasing and normalization** — consistent text cleaning before any analysis
-- **N-gram extraction** — bigram frequency analysis using NLTK's `ngrams`
-- **Word frequency analysis** — `Counter`-based term frequency ranking
-- **Vocabulary richness** — unique token count as a proxy for lexical diversity
-- **Lexical mirroring** — vocabulary overlap between two speakers as a measure of linguistic alignment
-- **Question detection** — regex-based pragmatic feature extraction
-- **Temporal pattern analysis** — time-of-day, day-of-week, and seasonal message trends
-- **Word clouds** — visual frequency summaries using `wordcloud`
-- **Network analysis** — reply graph construction using `networkx`
+- **Tokenization** - sentence and word tokenization via NLTK
+- **Stopword removal** - English stopwords + custom terms
+- **Lowercasing and normalization** - consistent text cleaning before any analysis
+- **N-gram extraction** - bigram frequency analysis using NLTK's `ngrams`
+- **Word frequency analysis** - `Counter`-based term frequency ranking
+- **Vocabulary richness** - unique token count as a proxy for lexical diversity
+- **Lexical mirroring** - vocabulary overlap between two speakers as a measure of linguistic alignment
+- **Question detection** - regex-based pragmatic feature extraction
+- **Temporal pattern analysis** - time-of-day, day-of-week, and seasonal message trends
+- **Word clouds** - visual frequency summaries using `wordcloud`
+- **Network analysis** - reply graph construction using `networkx`
 
 ---
 
@@ -224,4 +224,4 @@ telegram-chat-analysis/
 
 ---
 
-*Built by [Ho Chinwei](https://github.com/HoChinWei) · PhD student in Cognitive Psychology · University of Hull*
+*Built by [Ho Chin Wei](https://github.com/HoChinWei) · PhD student in Cognitive Psychology · University of Hull*
