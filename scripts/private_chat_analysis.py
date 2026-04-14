@@ -12,7 +12,7 @@
 #     --your-name  "Your Name" \
 #     --other-name "Their Name" \
 #     --input      "../data/raw/messages*.html" \
-#     --output     "../data/outputs/private" \
+#     --output     "../data/outputs \
 #     --timezone   8
 # ============================================================
 

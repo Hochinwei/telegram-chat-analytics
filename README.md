@@ -1,8 +1,12 @@
+<span align="center">
+
 # 📱 Telegram Chat Analysis
+
+</span>
 
 A Python NLP pipeline for analyzing exported Telegram chats — works with both **group chats** and **private (two-person) chats**.
 
-Built as a personal showcase of applied NLP and data visualization techniques using Python, pandas, NLTK, and matplotlib.
+This was built as a personal showcase of applied Natural Language Processing (NLP) and data visualization techniques using Python, pandas, NLTK, and matplotlib.
 
 ---
 
@@ -23,14 +27,14 @@ Built as a personal showcase of applied NLP and data visualization techniques us
 
 ## Overview
 
-This project takes raw HTML exports from Telegram Desktop and turns them into visual insights. There are two scripts, each targeting a different kind of analysis:
+This project takes raw HTML exports that can be extracted from Telegram Desktop and turns them into visual insights. There are two scripts, each creating two different kinds of analysis:
 
 | Script | Best for |
 |---|---|
 | `group_chat_analysis.py` | Group chats with 3+ members |
 | `private_chat_analysis.py` | Two-person private chats |
 
-All scripts handle multiple export files automatically (i.e., `messages.html`, `messages2.html`, ... `messages10.html`).
+All scripts handle multiple telegram export files automatically (i.e., `messages.html`, `messages2.html`, ... `messages10.html`).
 
 ---
 
@@ -44,7 +48,7 @@ All scripts handle multiple export files automatically (i.e., `messages.html`, `
 6. Uncheck media if you only want text analysis
 7. Click Export — this produces one or more `messages*.html` files
 
-> **Note:** Telegram splits large chats into multiple files (`messages.html`, `messages2.html`, etc.). All scripts automatically detect and combine them.
+> **Note:** Telegram splits large chats into multiple files (`messages.html`, `messages2.html`, etc.). All scripts automatically detect and combine them. All you have to do is upload these files into the `data\raw` folder.
 
 ---
 
@@ -81,31 +85,38 @@ networkx
 
 Analyzes group chats with multiple members. Produces charts on:
 
-- **Activity stats** — message counts per member, most active days, hourly heatmaps
-- **Word patterns** — top words, bigrams, word clouds per member, vocabulary richness
-- **Word patterns by year** — word clouds and top words/bigrams split by calendar year
-- **Interaction metrics** — reply rates, media sharing, who replies to whom (network graph)
+- **Activity stats**: message counts per member, most active days, hourly heatmaps
+- **Word patterns**: top words, bigrams, word clouds per member, vocabulary richness
+- **Word patterns by year**: word clouds and top words/bigrams split by calendar year
+- **Interaction metrics**: reply rates, media sharing, who replies to whom (network graph)
 
 #### ⚙️ Parameters to configure
 
 Open `scripts/group_chat_analysis.py` and edit the CONFIG block at the top:
 
 ```python
-# ─── REQUIRED ──────────────────────────────────────────────
-INPUT_PATTERN = "../data/raw/messages*.html" # path to your exported HTML files
-OUTPUT_DIR = "../data/outputs/group"         # where to save charts
-
-# ─── OPTIONAL: filter out bots and spam accounts ───────────
-# The script already removes senders containing "bot" or "via @".
-# Add any additional names to exclude here:
-EXCLUDE_SENDERS = {
-    "SG SHARES",
-    "🇸🇬SGFOLLOWSALL🇸🇬",
-    # add more as needed
-}
+python -m scripts.group_chat_analysis \
+  --input-pattern "data/raw/messages*.html" \
+  --output-dir "data/outputs/group" \
+  --exclude-sender "SG SHARES" \
+  --exclude-sender "🇸🇬SGFOLLOWSALL🇸🇬"
 ```
 
-> **Tip:** Run the script once first, then check `parsed_messages.csv` to see all sender names. Add any bots or channels to `EXCLUDE_SENDERS` and re-run.
+Key arguments:
+
+`--input-pattern` (required): Glob for your Telegram HTML export files, e.g. data/raw/messages*.html.
+
+`--output-dir` (required): Directory where all charts and CSVs will be written.
+
+`--exclude-sender` (optional, repeatable): Names to exclude (bots/channels/spam); you can pass this flag multiple times.
+
+You can see all options with:
+
+```python
+python -m scripts.group_chat_analysis --help
+```
+
+> **Tip:** After the first run, inspect `parsed_messages.csv` in the output directory to check the exact sender names, then rerun with additional `--exclude-sender` arguments if needed.
 
 ---
 
@@ -115,28 +126,36 @@ EXCLUDE_SENDERS = {
 
 Analyzes two-person private chats. Focuses on conversation dynamics and relationship patterns:
 
-- **Activity & rhythm** — monthly volume, year-on-year totals, talk ratio over time, day/hour heatmaps
-- **Response times** — distribution of reply speeds, trend over time
-- **Conversation dynamics** — who initiates conversations, session lengths, burst patterns, longest silences
-- **Messaging style** — message length over time, question rates, vocabulary overlap
-- **Word patterns by year** — top words, bigrams, and word clouds split by year per person
+- **Activity & rhythm**: monthly volume, year-on-year totals, talk ratio over time, day/hour heatmaps
+- **Response times**: distribution of reply speeds, trend over time
+- **Conversation dynamics**: who initiates conversations, session lengths, burst patterns, longest silences
+- **Messaging style**: message length over time, question rates, vocabulary overlap
+- **Word patterns by year**: top words, bigrams, and word clouds split by year per person
 
-#### ⚙️ Parameters to configure
+#### ⚙️ Example argument
 
 ```python
-# ─── REQUIRED ──────────────────────────────────────────────
-INPUT_PATTERN = "../data/raw/messages*.html" # path to your exported HTML files
-OUTPUT_DIR = "../data/outputs/private"       # where to save charts
-YOUR_NAME = "Your Name Here"                 # MUST match exactly how your name appears in the chat
-
-# ─── OPTIONAL ──────────────────────────────────────────────
-SESSION_GAP_MINUTES = 60  # silence gap (in minutes) that marks a new conversation
-
-# Filter: only keep these two senders (everything else is excluded automatically)
-KEEP_SENDERS = {"Your Name Here", "Their Name Here"}
+python -m scripts.private_chat_analysis \
+  --input-pattern "data/raw/messages*.html" \
+  --output-dir "data/outputs/private" \
+  --your-name "Your Name Here" \
+  --other-name "Their Name Here" \
+  --session-gap-minutes 60
 ```
 
-> **Important:** `YOUR_NAME` and entries in `KEEP_SENDERS` must match **exactly** how names appear in the Telegram export, including capitalisation and spacing. Check `parsed_messages.csv` after a first run if unsure.
+#### Key arguments:
+
+`--input-pattern` (required): Glob for your Telegram HTML export files, e.g. data/raw/messages*.html.
+
+`--output-dir` (required): Directory where all charts and CSVs will be written.
+
+`--your-name` (required): Your own display name in the Telegram export.
+
+`--other-name` (required): The other person’s display name in the chat.
+
+`--session-gap-minutes` (optional): Minutes of silence that define a new “conversation session” (default matches the script’s internal default).
+
+> **Important:** `--your-name` and `--other-name` must match exactly what appears in the export (including capitalisation and spacing); if unsure, run once and check `parsed_messages.csv` in the output directory.
 
 ---
 
@@ -197,31 +216,6 @@ KEEP_SENDERS = {"Your Name Here", "Their Name Here"}
 - **Temporal pattern analysis** - time-of-day, day-of-week, and seasonal message trends
 - **Word clouds** - visual frequency summaries using `wordcloud`
 - **Network analysis** - reply graph construction using `networkx`
-
----
-
-## Project Structure
-
-```
-telegram-chat-analysis/
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── scripts/
-│   ├── group_chat_analysis.py
-│   └── private_chat_analysis.py
-└── sample_output/
-    └── (add example PNGs here to showcase on GitHub)
-```
-
----
-
-## Notes
-
-- Your raw `messages*.html` files are listed in `.gitignore` by default to protect your privacy.
-- All output charts are also gitignored by default — add specific PNGs to `sample_output/` manually if you want to showcase them.
-- Tested on Telegram Desktop exports (Windows/Mac/Linux).
-
 ---
 
 *Built by [Ho Chin Wei](https://github.com/HoChinWei) · PhD student in Cognitive Psychology · University of Hull*
