@@ -5,14 +5,15 @@
 # fixing in one place.
 # ============================================================
 
-import re
-import os
 import glob
+import os
+import re
 import warnings
-import pandas as pd
 from datetime import datetime
-from bs4 import BeautifulSoup
+
 import nltk
+import pandas as pd
+from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -164,3 +165,59 @@ PALETTE = [
 def sender_colors(senders):
     """Return a dict mapping each sender name to a unique hex colour."""
     return {s: PALETTE[i % len(PALETTE)] for i, s in enumerate(sorted(senders))}
+
+# ════════════════════════════════════════════════════════════
+# ANALYTICS LOGIC
+# ════════════════════════════════════════════════════════════
+
+def compute_response_times(df, max_gap_minutes=1440, return_excluded=False):
+    """
+    Return a DataFrame with columns: responder, response_min, and optionally month.
+
+    A response is recorded from the LAST message of the previous sender to the FIRST
+    message of the new sender. Gaps >= max_gap_minutes are considered new
+    conversations, not replies, and are capped.
+    """
+    cols = ["responder", "response_min"]
+    if "month" in df.columns:
+        cols.append("month")
+
+    if df.empty or len(df) <= 1:
+        empty_df = pd.DataFrame(columns=cols)
+        if return_excluded:
+            return empty_df, 0
+        return empty_df
+
+    # Sort using stable sort to keep ties in original order without mutating input
+    df_s = df.sort_values("timestamp", kind="stable").reset_index(drop=True)
+
+    # Vectorized shift
+    prev_sender = df_s["sender"].shift(1)
+    prev_timestamp = df_s["timestamp"].shift(1)
+
+    # Condition: sender changes
+    is_response = (df_s["sender"] != prev_sender) & prev_sender.notna()
+
+    # Response times in minutes
+    gap_minutes = (df_s["timestamp"] - prev_timestamp).dt.total_seconds() / 60
+
+    # Mask for all alternating messages
+    mask_alternating = is_response
+
+    # Count how many were excluded by the cap
+    valid_gap_mask = (gap_minutes >= 0) & (gap_minutes < max_gap_minutes)
+    excluded_count = int((mask_alternating & ~valid_gap_mask).sum())
+
+    # Final mask for included responses
+    mask_included = mask_alternating & valid_gap_mask
+
+    # Build resulting DataFrame
+    res_df = df_s.loc[mask_included].copy()
+    res_df["responder"] = res_df["sender"]
+    res_df["response_min"] = gap_minutes[mask_included]
+
+    rdf = res_df[cols].reset_index(drop=True)
+
+    if return_excluded:
+        return rdf, excluded_count
+    return rdf

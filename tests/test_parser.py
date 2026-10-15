@@ -64,12 +64,3 @@ def test_parse_edge_cases():
     assert "Hello 🌍! привет" in texts
 
 
-# The private chat script computes response times within a monolithic function plot_response_times()
-# which expects a full DataFrame with 'month' column and tries to plot immediately.
-# We cannot easily test just the calculation without it failing on plot generation if we pass mock data
-# unless we run the whole script. I will add an xfail test explaining this.
-@pytest.mark.xfail(reason="Response time calculation is tightly coupled with plotting in a monolithic function", strict=True)
-def test_private_chat_response_time_logic():
-    # If we could, we would assert that the response time between Alice's last message at 10:02
-    # and Bob's first at 10:05 is 3 minutes.
-    assert False

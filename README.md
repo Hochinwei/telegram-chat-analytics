@@ -156,6 +156,8 @@ python -m scripts.private_chat_analysis \
 
 `--session-gap-minutes` (optional): Minutes of silence that define a new “conversation session” (default matches the script’s internal default).
 
+`--max-response-gap` (optional): Minutes of silence beyond which a response is treated as a new conversation rather than a reply. A response is measured from the last message of the previous sender to the first message of the new sender.
+
 > **Important:** `--your-name` and `--other-name` must match exactly what appears in the export (including capitalisation and spacing); if unsure, run once and check `parsed_messages.csv` in the output directory.
 
 ---
