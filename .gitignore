@@ -1,4 +1,4 @@
-# Raw Telegram exports — keep private
+ Raw Telegram exports — keep private
 data/*
 !data/.gitkeep
 outputs/
@@ -49,3 +49,5 @@ Thumbs.db
 !tests/data/*.html
 !tests/data/*.csv
 !sample_output/*.csv
+!sample_data/
+!sample_data/*.html
