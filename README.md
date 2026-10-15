@@ -54,6 +54,8 @@ All scripts handle multiple telegram export files automatically (i.e., `messages
 
 ## Installation
 
+Requires Python 3.10 or later.
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/telegram-chat-analysis.git
@@ -61,18 +63,17 @@ cd telegram-chat-analysis
 
 # Install dependencies
 pip install -r requirements.txt
+
+# For development (includes testing and linting tools)
+pip install -r requirements-dev.txt
 ```
 
-### Requirements
+### Running Tests
 
-```
-beautifulsoup4
-pandas
-matplotlib
-seaborn
-nltk
-wordcloud
-networkx
+To run the test suite:
+
+```bash
+pytest
 ```
 
 ---
