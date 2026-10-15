@@ -77,10 +77,18 @@ def parse_single_file(filepath):
         if not body:
             continue
 
+        is_forwarded = False
+        if body.find("div", class_="forwarded body"):
+            is_forwarded = True
+
         # Sender name is only printed on the first message in a consecutive block
-        from_tag = body.find("div", class_="from_name")
+        from_tag = body.find("div", class_="from_name", recursive=False)
         if from_tag:
-            current_sender = from_tag.get_text(strip=True)
+            from_text = from_tag.get_text(strip=True)
+            if from_text.startswith("Forwarded from"):
+                is_forwarded = True
+            else:
+                current_sender = from_text
 
         # Timestamp is stored in the 'title' attribute of the date div
         date_tag = body.find("div", class_=lambda c: c and "date" in c)
@@ -100,11 +108,12 @@ def parse_single_file(filepath):
 
         if current_sender and text and timestamp:
             records.append({
-                "sender":    current_sender,
-                "text":      text,
-                "timestamp": timestamp,
-                "has_media": has_media,
-                "msg_len":   len(text),
+                "sender":       current_sender,
+                "text":         text,
+                "timestamp":    timestamp,
+                "has_media":    has_media,
+                "msg_len":      len(text),
+                "is_forwarded": is_forwarded,
             })
 
     return records
