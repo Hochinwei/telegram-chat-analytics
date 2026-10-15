@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Run Ruff (lint)
-        run: ruff check scripts/ --output-format=github || echo "Ruff check finished"
+        run: ruff check scripts/ || echo "Ruff check finished"
 
       - name: Run Pytest
         run: pytest
