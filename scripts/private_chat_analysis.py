@@ -9,30 +9,36 @@
 #
 # HOW TO USE:
 #   python private_chat_analysis.py \
-#     --your-name  "Your Name" \
-#     --other-name "Their Name" \
+#     --your_name  "Your Name" \
+#     --other_name "Their Name" \
 #     --input      "../data/raw/messages*.html" \
-#     --output     "../data/outputs \
-#     --timezone   8
+#     --output     "../data/outputs" \
+#     --timezone   8 \
+#     --max-response-gap 1440
 # ============================================================
 
+import argparse
 import os
 import sys
-import math
 import warnings
-import argparse
+
+# Make local import work during tests
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import matplotlib
 import numpy as np
 import pandas as pd
-import matplotlib
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from collections import Counter
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 from nltk.util import ngrams
 from wordcloud import WordCloud
 
 # Shared utilities — HTML parsing, text cleaning, colour palette
-from utils import get_tokens, parse_all_files, sender_colors
+from utils import compute_response_times, get_tokens, parse_all_files, sender_colors
 
 warnings.filterwarnings("ignore")
 
@@ -70,6 +76,10 @@ def parse_args():
     parser.add_argument(
         "--session-gap", type=int, default=60,
         help="Minutes of silence that mark the start of a new conversation (default: 60)"
+    )
+    parser.add_argument(
+        "--max-response-gap", type=int, default=1440,
+        help="Longer gaps are treated as a new conversation, not a reply (default: 1440)"
     )
     return parser.parse_args()
 
@@ -180,22 +190,14 @@ def plot_activity(df, colors, outdir, your_name, other_name):
 # SECTION 2: RESPONSE TIMES
 # ════════════════════════════════════════════════════════════
 
-def plot_response_times(df, colors, outdir, your_name, other_name):
-    df_s  = df.sort_values("timestamp").reset_index(drop=True)
-    rows  = []
-    for i in range(1, len(df_s)):
-        curr = df_s.loc[i]
-        prev = df_s.loc[i - 1]
-        if curr["sender"] != prev["sender"]:
-            gap = (curr["timestamp"] - prev["timestamp"]).total_seconds() / 60
-            if 0 < gap < 1440:
-                rows.append({"responder": curr["sender"],
-                             "response_min": gap,
-                             "month": curr["month"]})
-    rdf = pd.DataFrame(rows)
+def plot_response_times(df, colors, outdir, your_name, other_name, max_gap_minutes=1440):
+    rdf, excluded = compute_response_times(df, max_gap_minutes=max_gap_minutes, return_excluded=True)
+
     if rdf.empty:
         print("⚠️  Not enough alternating messages to compute response times.")
         return
+
+    print(f"  {len(rdf)} responses analysed, {excluded} excluded for exceeding the {max_gap_minutes}-minute cap.")
 
     senders = [your_name, other_name]
 
@@ -512,7 +514,7 @@ if __name__ == "__main__":
     plot_activity(df, colors, OUTPUT_DIR, YOUR_NAME, OTHER_NAME)
 
     print("⏱  Section 2: Response times...")
-    plot_response_times(df, colors, OUTPUT_DIR, YOUR_NAME, OTHER_NAME)
+    plot_response_times(df, colors, OUTPUT_DIR, YOUR_NAME, OTHER_NAME, args.max_response_gap)
 
     print("💬 Section 3: Conversation dynamics...")
     plot_conversation_dynamics(df, colors, OUTPUT_DIR, YOUR_NAME, OTHER_NAME, SESSION_GAP)
