@@ -1,9 +1,26 @@
 # Raw Telegram exports — keep private
-data/raw/
+data/*
+!data/.gitkeep
+outputs/
 *.html
 
+# Specific files to ignore
+result.json
+messages*.html
+ChatExport_*/
+export/
+*.zip
+
+# Telegram media folders
+photos/
+video_files/
+voice_messages/
+stickers/
+files/
+chats/
+
 # Output charts — add selected ones to sample_output/ manually
-data/outputs/
+*.csv
 
 # Python
 __pycache__/
@@ -12,8 +29,13 @@ __pycache__/
 dist/
 build/
 .env
+*.local
 venv/
 .venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # OS
 .DS_Store
@@ -22,3 +44,8 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
+
+# Exceptions
+!tests/data/*.html
+!tests/data/*.csv
+!sample_output/*.csv

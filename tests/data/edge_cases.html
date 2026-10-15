@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head><title>Export</title></head>
+<body>
+    <!-- Service message -->
+    <div class="message service clearfix">
+        <div class="body">
+            <div class="text">Alice Example pinned a message</div>
+            <div class="date" title="01.01.2023 10:00:00 UTC">10:00</div>
+        </div>
+    </div>
+    <!-- Forwarded message -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Forwarded from Jane</div>
+            <div class="text">This is forwarded!</div>
+            <div class="date" title="01.01.2023 10:05:00 UTC">10:05</div>
+        </div>
+    </div>
+    <!-- Empty/deleted message (no text div or empty text div) -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Alice Example</div>
+            <div class="date" title="01.01.2023 10:10:00 UTC">10:10</div>
+        </div>
+    </div>
+    <!-- Media only message -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Alice Example</div>
+            <div class="media_wrap">
+                <div class="photo">Photo</div>
+            </div>
+            <div class="date" title="01.01.2023 10:15:00 UTC">10:15</div>
+        </div>
+    </div>
+    <!-- Mixed text and link -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Bob Example</div>
+            <div class="text">Check this: <a href="https://example.com">Link</a>!</div>
+            <div class="date" title="01.01.2023 10:20:00 UTC">10:20</div>
+        </div>
+    </div>
+    <!-- Non-ASCII and emoji -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Charlie Fake</div>
+            <div class="text">Hello 🌍! привет</div>
+            <div class="date" title="01.01.2023 10:25:00 UTC">10:25</div>
+        </div>
+    </div>
+</body>
+</html>
