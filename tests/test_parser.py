@@ -43,12 +43,35 @@ def test_parse_all_files_overlap():
     assert list(df["text"]) == ["Message 1", "Message 2", "Message 3"]
 
 
-@pytest.mark.xfail(reason="Forwarded messages misattribute sender to 'Forwarded from X' instead of current_sender", strict=True)
 def test_parse_forwarded_message():
-    records = parse_single_file("tests/data/edge_cases.html")
-    # First parsed record should be the forwarded message, because service messages are ignored.
-    # Current behavior sets sender to "Forwarded from Jane" instead of None or the actual sender.
-    assert records[0]["sender"] != "Forwarded from Jane"
+    records = parse_single_file("tests/data/forwarded_cases.html")
+    # Check messages
+    assert len(records) == 4
+
+    # 1. Normal message before forwarded message
+    assert records[0]["sender"] == "Alice Example"
+    assert records[0]["is_forwarded"] is False
+
+    # 2. Forwarded message with its own outer from_name
+    assert records[1]["sender"] == "Alice Example"
+    assert records[1]["text"] == "This is forwarded text!"
+    assert records[1]["is_forwarded"] is True
+
+    # 3. Forwarded continuation message with no outer from_name (should keep previous sender)
+    assert records[2]["sender"] == "Alice Example"
+    assert records[2]["text"] == "This is the second forwarded text!"
+    assert records[2]["is_forwarded"] is True
+
+    # 4. Normal message immediately after a forwarded message (verifying current_sender wasn't contaminated by original author)
+    assert records[3]["sender"] == "Alice Example"
+    assert records[3]["text"] == "And this is a normal message."
+    assert records[3]["is_forwarded"] is False
+
+    # Additionally verify edge_cases.html that original author does not appear in sender
+    records_edge = parse_single_file("tests/data/edge_cases.html")
+    for r in records_edge:
+        assert not r["sender"].startswith("Forwarded from")
+        assert r["sender"] != "Jane Fake"
 
 def test_parse_edge_cases():
     records = parse_single_file("tests/data/edge_cases.html")

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Export</title></head>
+<body>
+    <!-- Normal message before forwarded messages -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Alice Example</div>
+            <div class="text">Hello!</div>
+            <div class="date" title="01.01.2023 10:00:00 UTC">10:00</div>
+        </div>
+    </div>
+    <!-- Forwarded message with outer from_name -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="from_name">Alice Example</div>
+            <div class="forwarded body">
+                <div class="from_name">Jane Fake</div>
+                <div class="text">This is forwarded text!</div>
+            </div>
+            <div class="date" title="01.01.2023 10:05:00 UTC">10:05</div>
+        </div>
+    </div>
+    <!-- Forwarded continuation message without outer from_name -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="forwarded body">
+                <div class="from_name">Jane Fake</div>
+                <div class="text">This is the second forwarded text!</div>
+            </div>
+            <div class="date" title="01.01.2023 10:06:00 UTC">10:06</div>
+        </div>
+    </div>
+    <!-- Normal message after forwarded message -->
+    <div class="message default clearfix">
+        <div class="body">
+            <div class="text">And this is a normal message.</div>
+            <div class="date" title="01.01.2023 10:07:00 UTC">10:07</div>
+        </div>
+    </div>
+</body>
+</html>
